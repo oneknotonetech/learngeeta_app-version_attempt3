@@ -1,0 +1,45 @@
+#!/bin/bash
+
+
+: '
+Splash Screen:
+iOS:     2208 x 2208 or more
+
+Icon:    1024 x 1024 or more
+'
+
+echo "If rn-toolbox not installed. Install using: sudo npm install -g yo generator-rn-toolbox" 
+yo rn-toolbox:assets --projectName ShatKoti --icon assets/icon.png 
+#yo rn-toolbox:assets --projectName GrassBladeLRS --splash assets/splash-android.png --android
+#yo rn-toolbox:assets --projectName GrassBladeLRS --splash assets/splash-ios.png --ios
+ 
+
+
+#Lines  below are commented and will not execute
+: '
+
+mipmap_sizes=(
+"hdpi"
+"mdpi"
+"xhdpi"
+"xxhdpi"
+"xxxhdpi"
+)
+icon_sizes=(
+"72x72"
+"48x48"
+"96x96"
+"144x144"
+"192x192"
+)
+for i in ${!mipmap_sizes[@]}; do
+    mipmap_size=${mipmap_sizes[$i]}
+    icon_size=${icon_sizes[$i]}
+    command="convert -sharpen 0x4 assets/ic_launcher.png -resize $icon_size android/app/src/main/res/mipmap-$mipmap_size/ic_launcher.png"
+    command2="cp android/app/src/main/res/mipmap-$mipmap_size/ic_launcher.png android/app/src/main/res/mipmap-$mipmap_size/ic_launcher_round.png"
+    echo $command
+    eval $command
+    eval $command2
+done
+
+'

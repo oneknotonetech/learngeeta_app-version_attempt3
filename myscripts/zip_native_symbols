@@ -1,0 +1,7 @@
+versionCode=$(grep -r "versionCode " android/app/build.gradle | head -n 1 | awk '{print $3}')
+
+cd android/app/build/intermediates/merged_native_libs/release/out/lib/
+zip -r native_symbols.zip *
+cd -
+mv android/app/build/intermediates/merged_native_libs/release/out/lib/native_symbols.zip "android/app/build/outputs/bundle/release/native_symbols-vc-$versionCode.zip"
+echo "versionCode $versionCode"

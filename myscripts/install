@@ -1,0 +1,18 @@
+
+rm -rf android
+rm -rf ios
+npm install
+npm i react-native-eject
+npx react-native eject
+npm install
+#./myscripts/rename-react-native-project
+
+./myscripts/create_icons
+
+mkdir android/app/src/main/assets
+#rm -rf ./android/app/src/main/res/drawable-*
+npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle
+
+
+
+

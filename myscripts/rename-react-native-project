@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# get the full path for the current dir
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+NEW_APP_NAME=SKHC
+NEW_PACKAGE_NAME_ROOT="com.gblrs"
+
+
+
+
+NEW_PACKAGE_NAME="${NEW_PACKAGE_NAME_ROOT}.${NEW_APP_NAME}"
+NEW_APP_NAME_LOWER=`echo $NEW_APP_NAME | awk '{ print tolower($1) }'`
+OLD_PACKAGE_NAME="com.${NEW_APP_NAME_LOWER}"
+OLD_PACKAGE_NAME2="${NEW_PACKAGE_NAME_ROOT}.${NEW_APP_NAME_LOWER}"
+
+npx react-native-rename "${NEW_APP_NAME}" -b ${NEW_PACKAGE_NAME}
+#  rm -rf ios/Pods
+#  pod install --project-directory=./iOS 
+grep -rl ${OLD_PACKAGE_NAME} | grep -v myscripts | xargs sed -i '.bak' "s/${OLD_PACKAGE_NAME}/${NEW_PACKAGE_NAME}/g"
+grep -rl ${OLD_PACKAGE_NAME2} | grep -v myscripts | xargs sed -i '.bak' "s/${OLD_PACKAGE_NAME2}/${NEW_PACKAGE_NAME}/g"
+
+#iOS
+grep -rl "org.reactjs.native.example" | grep -v myscripts | xargs sed -i '.bak' "s/org.reactjs.native.example/${NEW_PACKAGE_NAME_ROOT}/g"
+#########
