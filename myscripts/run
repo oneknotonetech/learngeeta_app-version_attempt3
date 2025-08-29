@@ -1,0 +1,109 @@
+#!/usr/bin/env bash
+
+# This script automates common tasks for building and deploying a React Native application.
+# It handles Android and iOS build commands using Gradle for Android builds
+# and npm-based commands for React Native iOS simulation and device deployment.
+
+# Prepare function for setting up the Android environment
+Prepare() {
+    # List connected devices using adb (Android Debug Bridge) to ensure connectivity for Android commands
+    adb devices
+    
+    # Create the assets directory if it doesn't exist, required for Android builds
+    mkdir -p android/app/src/main/assets
+    
+    # Bundle React Native assets for Android platform and store it in the specified directory
+    # npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res
+    
+    # Remove any old drawable assets from the specified directory
+    # rm -rf ./android/app/src/main/res/drawable-*
+}
+
+# Function to execute Android Gradle commands with specified arguments
+ExecCommand() {
+    # Display the command being executed
+    echo $command_name
+    
+    # Change directory to Android folder to run the Gradle command
+    cd android
+    
+    # Build the command string using Gradle and the provided command name
+    comm="./gradlew $command_name"
+    
+    # Execute the command
+    eval $comm
+    
+    # Return to the original directory
+    cd ..
+}
+
+# Prompt the user to select a command to run
+read -p "
+Command:
+1. installRelease
+2. assembleRelease
+3. bundleRelease
+4. Android (npx react-native run-android) = ./gradlew installDebug
+5. assembleDebug
+6. iOS in Simulator (npx react-native run-ios)
+7. iOS in Device (npx react-native run-ios --device)
+8. Reverse TCP Port for Metro Server ? " COMMAND
+
+# Display selected command option
+echo $COMMAND
+
+# Evaluate user's choice and execute corresponding command
+case $COMMAND in
+    "1")
+        # Command for installing the release APK on the device
+        command_name="installRelease"
+        Prepare
+        ExecCommand
+    ;;
+    "2")
+        # Command to assemble a release APK (build without installation)
+        command_name="assembleRelease"
+        Prepare
+        ExecCommand
+    ;;
+    "3")
+        # Command to bundle the React Native app for release
+        command_name="bundleRelease"
+        Prepare
+        ExecCommand
+    ;;
+    "4")
+        # Command to run the React Native app on an Android emulator or device
+        comm="npx react-native run-android"
+        echo $comm
+        eval $comm
+    ;;
+    "5")
+        # Command to assemble a debug APK (build without installation)
+        command_name="assembleDebug"
+        Prepare
+        ExecCommand
+    ;;
+    "6")
+        # Command to run the React Native app on an iOS simulator with specified UDID
+       	comm="npx react-native run-ios destination --udid='04AD2357-FD1D-4CC1-80AC-361237D9D984'"
+        echo $comm
+        eval $comm
+    ;;
+    "7")
+        # Command to run the React Native app on a physical iOS device
+       	comm="npx react-native run-ios --device 'GV World'"
+        echo $comm
+        eval $comm
+    ;;
+    "8")
+        # Command to reverse TCP port 8081 for the Metro server on an Android device
+        comm="adb reverse tcp:8081 tcp:8081"
+        echo $comm
+        eval $comm
+    ;;
+    *)
+        # Error message for invalid command selection
+        echo "Invalid Option"
+    ;;
+esac

@@ -1,0 +1,3 @@
+unzip myscripts/ios_splash_files.zip
+pod install --project-directory=./iOS/
+

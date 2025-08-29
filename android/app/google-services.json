@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "450612989401",
+    "project_id": "learn-geeta-ea51a",
+    "storage_bucket": "learn-geeta-ea51a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:450612989401:android:35640f288d6f01d496ddc8",
+        "android_client_info": {
+          "package_name": "com.loginwithgoogle"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqhGjzdhCwBNE-t2UnZubgBo_jPiY_3p0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
