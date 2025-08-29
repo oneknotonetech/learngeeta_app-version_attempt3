@@ -1,14 +1,21 @@
-import { View, Text, TextInput, PermissionsAndroid, TouchableOpacity, StyleSheet, Image, Alert, ActivityIndicator, SafeAreaView, Appearance, Platform, ScrollView, KeyboardAvoidingView } from 'react-native'
+import { View, Text, TextInput, PermissionsAndroid, TouchableOpacity, StyleSheet, Image, Alert, ActivityIndicator, SafeAreaView, Appearance, Platform, ScrollView, KeyboardAvoidingView, Dimensions } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as userActions from '../redux-state/action-creators/index';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios, { Axios } from 'axios'
+// 
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios'
 import TimeZone from 'react-native-timezone'
 import messaging from '@react-native-firebase/messaging';
 import DeviceInfo from 'react-native-device-info';
 import { PermissionManager } from './helper/helper_register';
+import LinearGradient from 'react-native-linear-gradient';
+import * as Animatable from 'react-native-animatable';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
+const { width, height } = Dimensions.get('window');
 
 export default function Login({ navigation }) {
   // navigation.navigate('Home')
@@ -25,6 +32,8 @@ export default function Login({ navigation }) {
   const [os, setOs] = useState('');
   const [device_os, setDevice_os] = useState('');
   const [appVersion, setAppVersion] = useState('')
+  const [focusedInput, setFocusedInput] = useState(null);
+
   useEffect(() => {
     const initializeApp = async () => {
       try {
@@ -161,153 +170,406 @@ export default function Login({ navigation }) {
       setDeviceTheme('light')
     }
   })
+
   return (
+    <LinearGradient
+      colors={['#FF7D29', '#FFBF78', '#FFEEA9', '#FEFFD2']}
+      style={styles.container}
+    >
 
-    // <SafeAreaView style={{ flex: 1, backgroundColor: (deviceTheme == 'dark') ? 'gray' : 'whitesmoke' }}>
-    //   {/* <KeyboardAvoidingView style={{ flex: 1 }}
-    //     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}> */}
-    //     <ScrollView  contentContainerStyle={{flex:1}} >
-    //       <View style={{ height: "100%", flexDirection: 'column', backgroundColor: 'white', justifyContent: 'flex-end', alignItems: 'center' }}>
-    //         <View style={{ height: "20%", justifyContent: 'center', alignItems: 'center' }}>
-    //           <View style={{ height: 70, width: 200 }}>
-    //             <Image source={require('./assets/geetapariwar-logo.png')} style={{ height: "100%", width: "100%" }} />
-    //           </View>
-    //         </View>
-    //         <View style={{ width: "100%", height: "80%" }}>
+       
+       <Animatable.View 
+         animation={{
+           from: { translateY: 0, opacity: 0.2 },
+           to: { translateY: 8, opacity: 0.3 }
+         }}
+         duration={5000} 
+         iterationCount="infinite" 
+         direction="alternate"
+         easing="ease-in-out"
+         style={styles.floatingElement2}
+       >
+         <MaterialIcons name="star" size={16} color="#FF7D29" />
+       </Animatable.View>
 
-    //           <View style={{ alignItems: 'center', marginTop: 40 }}>
-    //             {isIndia ?
-    //               <>
-    //                 <View style={{ width: '90%', marginVertical: 10 }}>
-    //                   <Text style={{ color: 'black' }} >Enter your mobile number</Text>
-    //                 </View>
-    //                 <TextInput
-    //                   placeholderTextColor="#000"
-    //                   value={phoneNo}
-    //                   maxLength={10}
-    //                   keyboardType='numeric'
-    //                   placeholder='Mobile number'
-    //                   onChangeText={(txt) => { setPhoneNo(txt) }}
-    //                   style={styles.inputs}
-    //                 />
-    //                 <Text style={styles.inputTip}>
-    //                   Please enter your 10 digit registered WhatsApp number without country code.
-    //                 </Text>
-    //                 <Text style={[styles.inputTip, { marginBottom: 35, }]}>
-    //                   कृपया अपना 10 अंकों का पंजीकृत व्हाट्सएप नंबर कंट्री कोड के बिना लिखें।
-    //                 </Text>
-    //               </>
+      <SafeAreaView style={styles.safeArea}>
+        <ScrollView 
+          contentContainerStyle={styles.scrollContainer}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Logo Section with Sanskrit-inspired styling */}
+          <Animatable.View 
+            animation="fadeInDown" 
+            duration={1200}
+            style={styles.logoSection}
+          >
+            <Text style={styles.sanskritTitle}>॥ श्री राधे कृष्ण ॥</Text>
+            
+            <View style={styles.logoWrapper}>
+              <Image 
+                source={require('./assets/geetapariwar-logo.png')} 
+                style={styles.logo} 
+              />
+            </View>
+            
 
-    //               :
-    //               <>
-    //                 <View style={{ width: '90%', marginVertical: 10 }}>
-    //                   <Text style={{ color: 'black' }} >Enter your email address </Text>
-    //                 </View>
-    //                 <TextInput
-    //                   placeholderTextColor="#000"
-    //                   keyboardType='email-address'
-    //                   placeholder='Email address'
-    //                   onChangeText={(txt) => { setEmail(txt) }}
-    //                   style={styles.inputs}
-    //                 />
-    //               </>
-    //             }
-    //             {
-    //               loadingButton ?
-    //                 <TouchableOpacity onPress={callLoginApi} style={{ height: 45, width: "90%", fontSize: 16, padding: 0, backgroundColor: "#ad0d00", marginBottom: 25, borderRadius: 5, justifyContent: 'center', alignItems: 'center' }}>
-    //                   <ActivityIndicator color={"white"} size={22} />
-    //                 </TouchableOpacity>
-    //                 :
-    //                 <TouchableOpacity onPress={callLoginApi} style={{ height: 45, width: "90%", fontSize: 16, padding: 0, backgroundColor: "#ad0d00", marginBottom: 25, borderRadius: 5, justifyContent: 'center', alignItems: 'center' }}>
-    //                   <Text style={{ color: "white", fontSize: 16 }}>Login</Text>
-    //                 </TouchableOpacity>
-    //             }
-    //             <TouchableOpacity onPress={() => { navigation.navigate('Register') }} style={{ height: 45, width: "90%", fontSize: 16, padding: 0, backgroundColor: "#ad0d00", marginBottom: 25, borderRadius: 5, justifyContent: 'center', alignItems: 'center' }}>
-    //               <Text style={{ color: "white", fontSize: 16 }}>Registration</Text>
-    //             </TouchableOpacity>
-    //           </View>
+          </Animatable.View>
 
-    //         </View>
-    //       </View>
-    //     </ScrollView>
-    //   {/* </KeyboardAvoidingView> */}
+          {/* Form Section */}
+          <Animatable.View 
+            animation="fadeInUp" 
+            duration={1200}
+            delay={300}
+            style={styles.formSection}
+          >
+            <View style={styles.formCard}>
+              {isIndia ? (
+                <>
+                  <Text style={styles.formTitle}>मोबाइल नंबर दर्ज करें</Text>
+                  <Text style={styles.formSubtitle}>Enter your mobile number</Text>
+                  
+                  <View style={[
+                    styles.inputWrapper,
+                    focusedInput === 'phone' && styles.inputWrapperFocused
+                  ]}>
+                    <LinearGradient
+                      colors={focusedInput === 'phone' ? ['#FFF8DC', '#FFFAF0'] : ['#FFFFFF', '#F8F8FF']}
+                      style={styles.inputGradient}
+                    >
+                      <Ionicons 
+                        name="call-outline" 
+                        size={18} 
+                        color={focusedInput === 'phone' ? '#FF7D29' : '#FFBF78'} 
+                        style={styles.inputIcon}
+                      />
+                      <TextInput
+                        placeholderTextColor="#9E9E9E"
+                        value={phoneNo}
+                        maxLength={10}
+                        keyboardType='numeric'
+                        placeholder='Mobile number'
+                        onChangeText={(txt) => { setPhoneNo(txt) }}
+                        onFocus={() => setFocusedInput('phone')}
+                        onBlur={() => setFocusedInput(null)}
+                        style={styles.textInput}
+                      />
+                    </LinearGradient>
+                  </View>
+                  
+                  <Text style={styles.helpText}>
+                    कृपया कंट्री कोड के बिना 10 अंकों का व्हाट्सएप नंबर दर्ज करें
+                  </Text>
+                </>
+              ) : (
+                <>
+                  <Text style={styles.formTitle}>ईमेल दर्ज करें</Text>
+                  <Text style={styles.formSubtitle}>Enter your email address</Text>
+                  
+                  <View style={[
+                    styles.inputWrapper,
+                    focusedInput === 'email' && styles.inputWrapperFocused
+                  ]}>
+                    <LinearGradient
+                      colors={focusedInput === 'email' ? ['#FFF8DC', '#FFFAF0'] : ['#FFFFFF', '#F8F8FF']}
+                      style={styles.inputGradient}
+                    >
+                      <Ionicons 
+                        name="mail-outline" 
+                        size={18} 
+                        color={focusedInput === 'email' ? '#FF7D29' : '#FFBF78'} 
+                        style={styles.inputIcon}
+                      />
+                      <TextInput
+                        placeholderTextColor="#9E9E9E"
+                        keyboardType='email-address'
+                        placeholder='Email address'
+                        onChangeText={(txt) => { setEmail(txt) }}
+                        onFocus={() => setFocusedInput('email')}
+                        onBlur={() => setFocusedInput(null)}
+                        style={styles.textInput}
+                      />
+                    </LinearGradient>
+                  </View>
+                </>
+              )}
 
-
-    // </SafeAreaView>
-
-    <SafeAreaView style={{ flex: 1, backgroundColor: (deviceTheme == 'dark') ? 'gray' : 'whitesmoke' }}>
-      <ScrollView contentContainerStyle={{ flex: 1,backgroundColor:'white' }}>
-        <View style={{ alignItems: 'center', paddingVertical: 10 }}>
-          <View style={{ height: 70, width: 200, marginTop: 50 }}>
-            <Image source={require('./assets/geetapariwar-logo.png')} style={{ height: "100%", width: "100%" }} />
-          </View>
-          <View style={{ alignItems: 'center', marginTop: 30,width:"100%"}}>
-            {isIndia ?
-              <>
-                <View style={{ width: '90%', marginVertical: 10 }}>
-                  <Text style={{ color: 'black' }} >Enter your mobile number</Text>
-                </View>
-                <TextInput
-                  placeholderTextColor="#000"
-                  value={phoneNo}
-                  maxLength={10}
-                  keyboardType='numeric'
-                  placeholder='Mobile number'
-                  onChangeText={(txt) => { setPhoneNo(txt) }}
-                  style={styles.inputs}
-                />
-                <Text style={styles.inputTip}>
-                  Please enter your 10 digit registered WhatsApp number without country code.
-                </Text>
-                <Text style={[styles.inputTip, { marginBottom: 35, }]}>
-                  कृपया अपना 10 अंकों का पंजीकृत व्हाट्सएप नंबर कंट्री कोड के बिना लिखें।
-                </Text>
-              </>
-
-              :
-              <>
-                <View style={{ width: '90%', marginVertical: 10 }}>
-                  <Text style={{ color: 'black' }} >Enter your email address </Text>
-                </View>
-                <TextInput
-                  placeholderTextColor="#000"
-                  keyboardType='email-address'
-                  placeholder='Email address'
-                  onChangeText={(txt) => { setEmail(txt) }}
-                  style={styles.inputs}
-                />
-              </>
-            }
-            {
-              loadingButton ?
-                <TouchableOpacity onPress={callLoginApi} style={{ height: 45, width: "90%", fontSize: 16, padding: 0, backgroundColor: "#ad0d00", marginBottom: 25, borderRadius: 5, justifyContent: 'center', alignItems: 'center' }}>
-                  <ActivityIndicator color={"white"} size={22} />
+              {/* Login Button */}
+              <Animatable.View 
+                animation={{
+                  from: { scale: 1, opacity: 0.9 },
+                  to: { scale: 1.01, opacity: 1 }
+                }}
+                duration={2000} 
+                iterationCount="infinite"
+                direction="alternate"
+                easing="ease-in-out"
+              >
+                <TouchableOpacity 
+                  onPress={callLoginApi} 
+                  style={styles.loginButton}
+                  activeOpacity={0.8}
+                >
+                  <View style={styles.buttonInner}>
+                    {loadingButton ? (
+                      <ActivityIndicator color="#4A90E2" size="small" />
+                    ) : (
+                      <>
+                        <View style={styles.buttonTextContainer}>
+                          <Text style={styles.buttonText}>प्रवेश करें</Text>
+                          <Text style={styles.buttonTextSeparator}>|</Text>
+                          <Text style={styles.buttonTextEnglish}>Login</Text>
+                        </View>
+                      </>
+                    )}
+                  </View>
                 </TouchableOpacity>
-                :
-                <TouchableOpacity onPress={callLoginApi} style={{ height: 45, width: "90%", fontSize: 16, padding: 0, backgroundColor: "#ad0d00", marginBottom: 25, borderRadius: 5, justifyContent: 'center', alignItems: 'center' }}>
-                  <Text style={{ color: "white", fontSize: 16 }}>Login</Text>
-                </TouchableOpacity>
-            }
-            <TouchableOpacity onPress={() => { navigation.navigate('Register') }} style={{ height: 45, width: "90%", fontSize: 16, padding: 0, backgroundColor: "#ad0d00", marginBottom: 25, borderRadius: 5, justifyContent: 'center', alignItems: 'center' }}>
-              <Text style={{ color: "white", fontSize: 16 }}>Registration</Text>
-            </TouchableOpacity>
-          </View>
+              </Animatable.View>
 
-        </View>
-
-      </ScrollView>
-
-    </SafeAreaView>
-
+              {/* Registration Button */}
+              <TouchableOpacity 
+                onPress={() => { navigation.navigate('Register') }} 
+                style={styles.secondaryButton}
+                activeOpacity={0.8}
+              >
+                <View style={styles.secondaryButtonInner}>
+                  <View style={styles.secondaryButtonTextContainer}>
+                    <Text style={styles.secondaryButtonText}>पंजीकरण</Text>
+                    <Text style={styles.secondaryTextSeparator}>|</Text>
+                    <Text style={styles.secondaryButtonTextEnglish}>Registration</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </Animatable.View>
+        </ScrollView>
+      </SafeAreaView>
+    </LinearGradient>
   )
 }
+
 const styles = StyleSheet.create({
-  inputs: { paddingLeft: 20, height: 45, width: "90%", borderWidth: 1, borderRadius: 5, fontSize: 16, padding: 0, borderColor: "gray", marginBottom: 5, color: 'black' },
-  inputTip: {
-    color: 'gray',
-    fontSize: 14,
+  container: {
+    flex: 1,
+  },
+  safeArea: {
+    flex: 1,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    paddingHorizontal: 24,
+    justifyContent: 'center',
+    minHeight: height,
+  },
+
+     
+   floatingElement2: {
+     position: 'absolute',
+     top: height * 0.7,
+     left: width * 0.08,
+     zIndex: 1,
+   },
+  logoSection: {
+    alignItems: 'center',
+    marginBottom: 40,
+  },
+  sanskritTitle: {
+    fontSize: 22,
+    fontWeight: '600',
+    color: '#FF7D29',
+    marginBottom: 20,
+    textShadowColor: 'rgba(255, 255, 255, 0.9)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+    fontFamily: Platform.OS === 'ios' ? 'Devanagari MT' : 'serif',
+  },
+  logoWrapper: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 16,
+    shadowColor: '#FF7D29',
+    shadowOffset: {
+      width: 0,
+      height: 8,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 8,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 125, 41, 0.5)',
+  },
+  logo: {
+    height: 80,
+    width: 200,
+    resizeMode: 'contain',
+  },
+
+  formSection: {
+    alignItems: 'center',
+  },
+  formCard: {
+    width: '100%',
+    backgroundColor: 'rgba(255, 255, 255, 0.98)',
+    borderRadius: 24,
+    padding: 32,
+    shadowColor: '#FF7D29',
+    shadowOffset: {
+      width: 0,
+      height: 12,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 16,
+    elevation: 10,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 125, 41, 0.4)',
+  },
+  formTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#FF7D29',
+    textAlign: 'center',
+    marginBottom: 4,
+    fontFamily: Platform.OS === 'ios' ? 'Devanagari MT' : 'serif',
+  },
+  formSubtitle: {
+    fontSize: 16,
+    color: '#666666',
+    textAlign: 'center',
+    marginBottom: 32,
+    fontWeight: '400',
+  },
+  inputWrapper: {
+    marginBottom: 24,
+    borderRadius: 16,
+    shadowColor: '#FFBF78',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  inputWrapperFocused: {
+    shadowColor: '#FF7D29',
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 6,
+    transform: [{ scale: 1.02 }],
+  },
+  inputGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 191, 120, 0.3)',
+  },
+  inputIcon: {
+    marginRight: 12,
+  },
+  textInput: {
+    flex: 1,
+    fontSize: 16,
+    color: '#333333',
     fontWeight: '500',
+  },
+  helpText: {
+    fontSize: 13,
+    color: '#666666',
+    textAlign: 'center',
+    lineHeight: 18,
+    marginBottom: 32,
+    fontStyle: 'italic',
+  },
+  loginButton: {
+    marginBottom: 20,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.98)',
+    borderWidth: 2,
+    borderColor: '#FF7D29',
+    shadowColor: '#FF7D29',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 4,
+    overflow: 'hidden',
+  },
+  buttonInner: {
+    paddingVertical: 18,
+    paddingHorizontal: 24,
+    alignItems: 'center',
+    position: 'relative',
+    minHeight: 56,
+  },
+  buttonTextContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    color: '#FF7D29',
+    fontSize: 18,
+    fontWeight: '600',
+    fontFamily: Platform.OS === 'ios' ? 'Devanagari MT' : 'serif',
+  },
+  buttonTextSeparator: {
+    color: '#FF7D29',
+    fontSize: 16,
+    fontWeight: '400',
+    marginHorizontal: 8,
+    opacity: 0.7,
+  },
+  buttonTextEnglish: {
+    color: '#666666',
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  secondaryButton: {
+    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.98)',
+    borderWidth: 2,
+    borderColor: '#FF7D29',
+    shadowColor: '#FF7D29',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 4,
+    overflow: 'hidden',
+  },
+  secondaryButtonInner: {
+    paddingVertical: 18,
     paddingHorizontal: 20,
-    lineHeight: 20,
-  }
+    alignItems: 'center',
+    minHeight: 56,
+  },
+  secondaryButtonTextContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  secondaryButtonText: {
+    color: '#FF7D29',
+    fontSize: 16,
+    fontWeight: '500',
+    fontFamily: Platform.OS === 'ios' ? 'Devanagari MT' : 'serif',
+  },
+  secondaryTextSeparator: {
+    color: '#FF7D29',
+    fontSize: 14,
+    fontWeight: '400',
+    marginHorizontal: 6,
+    opacity: 0.7,
+  },
+  secondaryButtonTextEnglish: {
+    color: '#888888',
+    fontSize: 14,
+    fontWeight: '400',
+  },
 })
